@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 import LoadingSpinner from "../components/loading";
 import Pagination from "../components/pagination";
 
+const TOTAL_RESULTS = 100;
+
 export default function Home() {
   const router = useRouter();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchData = async ({ results, page }) => {
-    console.log(results, page);
+  const fetchData = async ({ results = 12, page = 1 }) => {
     setLoading(true);
     const res = await fetch(
       `https://randomuser.me/api/?results=${results}&page=${page}`
@@ -45,7 +46,11 @@ export default function Home() {
               </div>
             ))}
           </section>
-          <Pagination />
+          <Pagination
+            currentPage={router.query.page}
+            resultsPerPage={router.query.results}
+            totalResults={TOTAL_RESULTS}
+          />
         </div>
       )}
     </>
