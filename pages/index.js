@@ -1,30 +1,31 @@
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import LoadingSpinner from "../components/loading";
-import Pagination from "../components/pagination";
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import LoadingSpinner from '../components/loading'
+import Pagination from '../components/pagination'
 
-const TOTAL_RESULTS = 100;
+const TOTAL_RESULTS = 200
+const RESULTS_PER_PAGE = 12
 
 export default function Home() {
-  const router = useRouter();
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const router = useRouter()
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(false)
 
-  const fetchData = async ({ results = 12, page = 1 }) => {
-    setLoading(true);
+  const fetchData = async ({ results = RESULTS_PER_PAGE, page = 1 }) => {
+    setLoading(true)
     const res = await fetch(
       `https://randomuser.me/api/?results=${results}&page=${page}`
-    );
-    const users = await res.json();
-    setData(users.results);
-    setLoading(false);
-  };
+    )
+    const users = await res.json()
+    setData(users.results)
+    setLoading(false)
+  }
 
   useEffect(() => {
-    if (!router.isReady) return;
-    const { results, page } = router.query;
-    fetchData({ results, page });
-  }, [router.query, router.isReady]);
+    if (!router.isReady) return
+    const { results, page } = router.query
+    fetchData({ results, page })
+  }, [router.query, router.isReady])
 
   return (
     <>
@@ -47,12 +48,12 @@ export default function Home() {
             ))}
           </section>
           <Pagination
-            currentPage={router.query.page}
-            resultsPerPage={router.query.results}
+            initialPage={Number(router.query.page) || 1}
+            resultsPerPage={router.query.results || RESULTS_PER_PAGE}
             totalResults={TOTAL_RESULTS}
           />
         </div>
       )}
     </>
-  );
+  )
 }
